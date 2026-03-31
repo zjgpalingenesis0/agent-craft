@@ -1,11 +1,14 @@
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 from openai import OpenAI
 import json
 
 
 def create_client():
-    return OpenAI(api_key=OPENAI_API_KEY, base_url="https://api.deepseek.com")
-
+    # return OpenAI(api_key=OPENAI_API_KEY, base_url="https://api.deepseek.com")
+    return OpenAI(
+        api_key=OPENAI_API_KEY,
+        base_url=OPENAI_BASE_URL
+    )
 def get_weather(location):
     # 模拟获得天气信息
     return f"{location}当前天气：23℃，晴，风力2级"
@@ -39,10 +42,12 @@ def chat_loop(agent_client, tools):
     messages = [
         {"role": "system",
          "content": "你是一个善解人意会热心回答人问题的助手。如果你感觉你回答不了当前问题，就会调用函数来回答。"},
-        {"role": "user", "content": "北京今天的天气怎么样?"}
+        # {"role": "user", "content": "成都有什么好玩的地方?"}
+        {"role": "user", "content": "青岛今天的天气怎么样?"}
     ]
     response = agent_client.chat.completions.create(
-        model="deepseek-chat",
+        # model="deepseek-chat",
+        model="qwen3.5-plus",
         messages=messages,
         tools=tools,  # 调用工具
         tool_choice="auto"  # 模型自主选择是否调用工具
@@ -70,7 +75,8 @@ def chat_loop(agent_client, tools):
                 })
         # 第二次调用，让模型基于工具返回的结果再生成最终答案
         final_res = agent_client.chat.completions.create(
-            model="deepseek-chat",
+            # model="deepseek-chat",
+            model="qwen3.5-plus",
             messages=messages
         )
         print('已调用工具...')
