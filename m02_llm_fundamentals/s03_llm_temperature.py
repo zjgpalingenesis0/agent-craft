@@ -1,11 +1,16 @@
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 from openai import OpenAI
 
-client = OpenAI(api_key=OPENAI_API_KEY, base_url="https://api.deepseek.com")
+# client = OpenAI(api_key=OPENAI_API_KEY, base_url="https://api.deepseek.com")
+client = OpenAI(
+        api_key=OPENAI_API_KEY,
+        base_url=OPENAI_BASE_URL
+    )
 msg = [{"role": "user", "content": "请用一句话生动形象地描述量子力学的奇妙之处。"}]
 
 response_low_temperature = client.chat.completions.create(
-    model="deepseek-chat",
+    # model="deepseek-chat",
+    model="qwen3.5-plus",
     messages=[
         {"role": "system", "content": "你是一个科学解说员，请用生动形象的语言回答问题。"}, # 提示词角色
         {"role": "user", "content": "请用一句话描述量子力学的奇妙之处。"}, # 用户输入的对话
@@ -14,7 +19,8 @@ response_low_temperature = client.chat.completions.create(
 )
 
 response_high_temperature = client.chat.completions.create(
-    model="deepseek-chat",
+    # model="deepseek-chat",
+    model="qwen3.5-plus",
     messages=[
         {"role": "system", "content": "你是一个科学解说员，请用生动形象的语言回答问题。"}, # 提示词角色
         {"role": "user", "content": "请用一句话描述量子力学的奇妙之处。"}, # 用户输入的对话
