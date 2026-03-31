@@ -1,5 +1,5 @@
 # 让ai说一句话
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 from langchain_openai import ChatOpenAI
 
 # 配置deepseek
@@ -13,7 +13,7 @@ from langchain_openai import ChatOpenAI
 llm = ChatOpenAI(
     model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
+    base_url=OPENAI_BASE_URL
 )
 
 # 调用模型

@@ -41,3 +41,8 @@ if not AMAP_MAPS_API_KEY:
     raise ValueError("× 请在.env中设置AMAP_MAPS_API_KEY")
 if not CHATGPT_API_KEY:
     raise ValueError("× 请在.env中设置CHATGPT_API_KEY")
+
+# 新增：获取访问地址
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
+if not OPENAI_API_KEY:
+    raise ValueError("× 请在.env中设置OPENAI_API_KEY")
