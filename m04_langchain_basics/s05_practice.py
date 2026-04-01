@@ -1,4 +1,4 @@
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 from langchain_core.prompts import ChatPromptTemplate,MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
@@ -33,12 +33,18 @@ def create_bot(llm,sys_prompt):
 
 def main():
     # 此处集中配置LLM
+    # llm = ChatOpenAI(
+    #     model="deepseek-chat",
+    #     api_key=OPENAI_API_KEY,
+    #     base_url="https://api.deepseek.com"
+    # )
     llm = ChatOpenAI(
-        model="deepseek-chat",
+        model="qwen3.5-plus",
         api_key=OPENAI_API_KEY,
-        base_url="https://api.deepseek.com"
+        base_url=OPENAI_BASE_URL
     )
-    prompt = """你是‘小智’，一位专业、耐心且记忆力出色的 AI 助手。
+
+    prompt = """你是‘风’，一位专业、耐心且记忆力出色的 AI 助手。
     你善于倾听，能记住用户之前提到的信息，并在后续对话中自然提及。
     回答时简洁明了，避免冗余。"""
     bot = create_bot(llm,prompt)

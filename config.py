@@ -44,5 +44,19 @@ if not CHATGPT_API_KEY:
 
 # 新增：获取访问地址
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
-if not OPENAI_API_KEY:
-    raise ValueError("× 请在.env中设置OPENAI_API_KEY")
+if not OPENAI_BASE_URL:
+    raise ValueError("× 请在.env中设置OPENAI_BASE_URL")
+
+# 5. MySQL 数据库配置
+MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
+MYSQL_PORT = int(os.getenv("MYSQL_PORT", "3306"))
+MYSQL_USER = os.getenv("MYSQL_USER", "root")
+MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "")
+MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "chat_db")
+MYSQL_TABLE_NAME = os.getenv("MYSQL_TABLE_NAME", "chat_history")
+
+# 构建 MySQL 连接字符串
+MYSQL_CONNECTION_STRING = (
+    f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}"
+    f"@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+)

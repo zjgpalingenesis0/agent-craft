@@ -41,7 +41,12 @@ LLM 调用｜Prompt 设计｜Chain 构建｜Memory 记忆｜实战练习
 - 使用 `ChatMessageHistory` 存储历史  
 - `RunnableWithMessageHistory` 包装 Chain  
 - 保持上下文连贯性
-
+✅ 掌握点：  
+- 使用 `FileChatMessageHistory` 存储历史对话到.json文件中，存本地目录下
+- 记得先创建好path，其他都一样
+✅ 掌握点：  
+- 使用 `SQLChatMessageHistory` 存储历史对话到指定数据库表中
+- 记得先创建好path，其他都一样
 ---
 
 ### 5. `s05_practice.py`（综合实践）  
