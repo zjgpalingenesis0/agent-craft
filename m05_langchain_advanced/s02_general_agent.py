@@ -1,4 +1,4 @@
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 from langchain_openai import ChatOpenAI
 # 在LangChain 1.0+版本中，以下俩组件移到了langchain-classic包中
 from langchain_classic.agents import AgentExecutor
@@ -7,10 +7,15 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import tool # 导入 @tool
 
 # 配置LLM
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
 
 # 配置prompt

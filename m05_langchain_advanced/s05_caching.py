@@ -1,17 +1,32 @@
-from config import OPENAI_API_KEY
+from sys import prefix
+
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 import time
 from langchain_openai import ChatOpenAI
 from langchain_core.globals import set_llm_cache
-from langchain_community.cache import InMemoryCache
+from langchain_community.cache import InMemoryCache, RedisCache
+from redis import Redis
 
 # 配置llm
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
 # 设置全局缓存
-set_llm_cache(InMemoryCache())
+# set_llm_cache(InMemoryCache()) # 缓存在内存中
+redis_client = Redis(
+    host='localhost',
+    port=6379,
+    db=5,
+    decode_responses=True
+)
+set_llm_cache(RedisCache(redis_client))  # 缓存到redis中
 
 # 第一次调用llm(会远程请求)
 query = "用中文写一句关于猫的五言诗。"

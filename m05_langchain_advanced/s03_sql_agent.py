@@ -1,4 +1,4 @@
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 import sqlite3
 from langchain_openai import ChatOpenAI
 from langchain_community.agent_toolkits import create_sql_agent
@@ -6,12 +6,16 @@ from langchain_community.utilities import SQLDatabase  # 导入 SQLDatabase
 import os
 
 # 配置llm
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # 创建一个临时的数据库--用于演示
 db_file = "test_sql.db"
 if os.path.exists(db_file):

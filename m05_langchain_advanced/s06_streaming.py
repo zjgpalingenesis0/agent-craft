@@ -1,4 +1,4 @@
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 from langchain_openai import ChatOpenAI
 from langchain_classic.agents import AgentExecutor
 from langchain_classic.agents import create_tool_calling_agent
@@ -10,12 +10,19 @@ from langchain_core.callbacks.streaming_stdout import StreamingStdOutCallbackHan
 
 
 # 配置llm
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com",
+#     streaming=True,
+#     callbacks=[StreamingStdOutCallbackHandler()]
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com",
+    base_url=OPENAI_BASE_URL,
     streaming=True,
-    callbacks=[StreamingStdOutCallbackHandler()]
+    callbacks=[StreamingStdOutCallbackHandler()]  # 实时打印 token
 )
 # 配置prompt(新增俩占位符 一个为对话历史记录，一个为agent的思考过程)
 prompt = ChatPromptTemplate.from_messages([
@@ -36,7 +43,7 @@ tools = [get_weather]
 # 配置agent
 agent = create_tool_calling_agent(llm=llm,prompt=prompt,tools=tools)
 # 配置AgentExecutor
-agent_executor = AgentExecutor(agent=agent,tools=tools) # 这里没加verbose=True，想打印日志看思考链的可以自行打印
+agent_executor = AgentExecutor(agent=agent,tools=tools,verbose=True) # 这里没加verbose=True，想打印日志看思考链的可以自行打印
 
 
 # 记忆存储--包装agent_executor
