@@ -2,7 +2,7 @@ from langchain_chroma import Chroma
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from embeddings import get_embeddings
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
@@ -52,27 +52,37 @@ prompt = ChatPromptTemplate.from_messages([
 ])
 
 # 3. G-生成
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # 4. 辅助函数
 def format_docs(docs):
     return "\n".join(doc.page_content for doc in docs)
 
+parser = StrOutputParser()
 
 # 5. 组装RAG链条(LCEL)
 rag_chain = (
     {"context":retriever | format_docs, "question": RunnablePassthrough()}
     | prompt
     | llm
-    | StrOutputParser()
+    | parser
 )
 # 运行RAG链
 print('---正在运行RAG链条---')
 question = '莫斯科大火发生在小说的哪一部分？有哪些角色亲历了这场灾难？'
+response = rag_chain.invoke(question)
+print(f'提问:{question}')
+print(f'回答:{response}\n')
+
+question = '今天中国上海的天气如何'
 response = rag_chain.invoke(question)
 print(f'提问:{question}')
 print(f'回答:{response}')

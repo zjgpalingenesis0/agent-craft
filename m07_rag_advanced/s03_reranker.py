@@ -1,5 +1,5 @@
 import os
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 from embeddings import get_embeddings
 from langchain_chroma import Chroma
 from langchain_openai import ChatOpenAI
@@ -67,12 +67,16 @@ prompt = ChatPromptTemplate.from_messages([
 ])
 
 # 3. G-生成
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # 4. 辅助函数
 def format_docs(docs):
     return "\n".join(doc.page_content for doc in docs)

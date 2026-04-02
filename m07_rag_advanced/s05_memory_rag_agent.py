@@ -1,5 +1,5 @@
 import os
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 from embeddings import get_embeddings
 from langchain_chroma import Chroma
 from langchain_openai import ChatOpenAI
@@ -75,10 +75,15 @@ def build_rag_chain(llm_instance):
 # 2. 将 RAG链条 组装进Agent里
 def create_agent_with_memory():
     # LLm
+    # llm = ChatOpenAI(
+    #     model="deepseek-chat",
+    #     api_key=OPENAI_API_KEY,
+    #     base_url="https://api.deepseek.com"
+    # )
     llm = ChatOpenAI(
-        model="deepseek-chat",
+        model="qwen3.5-plus",
         api_key=OPENAI_API_KEY,
-        base_url="https://api.deepseek.com"
+        base_url=OPENAI_BASE_URL
     )
     # Prompt
     prompt = ChatPromptTemplate.from_messages([
