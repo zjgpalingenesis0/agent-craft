@@ -2,7 +2,7 @@ from typing import TypedDict # 定义数据类型
 from langgraph.graph import StateGraph,END,START
 
 
-# 1. 定义State(状态) -- 白板上只有一个字段"count"
+# 1. 定义State(状态) -- 白板上只有一个字段"count"，白板是一个字典形式   {count: 1}
 class State(TypedDict):
     count:int
 

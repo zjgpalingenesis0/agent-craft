@@ -1,5 +1,5 @@
 import os
-from config import OPENAI_API_KEY,LANGCHAIN_API_KEY
+from config import OPENAI_API_KEY, LANGCHAIN_API_KEY, OPENAI_BASE_URL
 from langchain_core.messages import HumanMessage
 from langchain.tools import tool
 from langchain_openai import ChatOpenAI
@@ -13,12 +13,16 @@ os.environ["LANGCHAIN_PROJECT"] = "demo02" # 自定义项目名
 os.environ["LANGCHAIN_API_KEY"] = LANGCHAIN_API_KEY
 
 # LLM配置
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # Prompt配置
 sys_prompt = "你是一个强大的助手，能查天气，也能回答一般问题。请使用中文回答。"
 

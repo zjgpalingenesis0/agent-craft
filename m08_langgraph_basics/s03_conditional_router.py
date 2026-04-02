@@ -1,4 +1,4 @@
-from config import OPENAI_API_KEY,LANGCHAIN_API_KEY
+from config import OPENAI_API_KEY, LANGCHAIN_API_KEY, OPENAI_BASE_URL
 from langchain_core.messages import HumanMessage
 from langchain.tools import tool
 from langchain_openai import ChatOpenAI
@@ -11,12 +11,16 @@ os.environ["LANGCHAIN_PROJECT"] = "demo01" # 自定义项目名
 os.environ["LANGCHAIN_API_KEY"] = LANGCHAIN_API_KEY
 
 # LLM配置
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # 工具定义
 @tool
 def get_weather(location):
@@ -49,7 +53,7 @@ def should_continue(state:MessagesState):
 # --- 构建 ReAct 循环图---
 workflow = StateGraph(MessagesState)
 
-workflow.add_node("agent",call_model) # Thought
+workflow.add_node("agent",call_model) # Thought，调用llm
 workflow.add_node("tools",tool_node) # Action + Observation
 
 workflow.add_edge(START,"agent")
