@@ -106,6 +106,24 @@ def format_docs(docs):
 parser = StrOutputParser()
 
 # 5. 组装 RAG 链条(LCEL)
+"""
+{"context":retrieve | format_docs,"question":RunnablePassthrough()}   解释
+数据流：
+  输入: "模块05的目标是什么？"
+    ↓
+  {"context": retrieve | format_docs, "question": RunnablePassthrough()}
+    ↓
+  {
+    "context": [从FAISS检索到的文档, 经过format_docs格式化],
+    "question": "模块05的目标是什么？"  # RunnablePassthrough 原样传递输入
+  }
+  详细解释：
+  - retrieve | format_docs → 先检索，再格式化文档
+  - RunnablePassthrough() → 直接把用户的问题传给字典
+"""
+
+
+
 rag_chain = (
     {"context":retrieve | format_docs,"question":RunnablePassthrough()}
     | prompt
