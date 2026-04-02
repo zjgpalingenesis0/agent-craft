@@ -43,7 +43,7 @@ with open("knowledge_base.txt",'w',encoding='utf8') as f:
 # 1. 加载并切分文档 (Load&Split)
 loader = TextLoader("knowledge_base.txt",encoding='utf8')
 docs = loader.load()
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=250,chunk_overlap=40) # 载入切分器模板
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=200,chunk_overlap=40) # 载入切分器模板
 splits = text_splitter.split_documents(docs) # 运行切分器
 print(f'p1完成，文档已切分成{len(splits)}个片段\n')
 

@@ -46,7 +46,9 @@ if not CHATGPT_API_KEY:
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
 if not OPENAI_BASE_URL:
     raise ValueError("× 请在.env中设置OPENAI_BASE_URL")
-
+DASHSCOPE_EMBEDDING_API_KEY = os.getenv("DASHSCOPE_EMBEDDING_API_KEY")
+if not DASHSCOPE_EMBEDDING_API_KEY:
+    raise ValueError("× 请在.env中设置DASHSCOPE_EMBEDDING_API_KEY")
 # 5. MySQL 数据库配置
 MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
 MYSQL_PORT = int(os.getenv("MYSQL_PORT", "3306"))

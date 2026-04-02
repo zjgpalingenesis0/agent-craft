@@ -1,5 +1,7 @@
+from langchain_community.embeddings import DashScopeEmbeddings
+
 from embeddings import get_embeddings
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, OPENAI_BASE_URL
 import os
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -33,16 +35,33 @@ KNOWLEDGE_BASE_CONTENT = """
 - **目标**: 掌握 LangChain Agents 的核心机制, 构建能调用工具、持续思考、具备记忆的智能体。
 - **内容**: Function Calling | @tool 工具封装 | ReAct 循环 | Agent 构建 | SQL Agent | 记忆+流式 | 开发优化
 """
+# 切分文档
 with open("knowledge_base.txt", "w", encoding="utf-8") as f:
     f.write(KNOWLEDGE_BASE_CONTENT)
 
 loader = TextLoader('knowledge_base.txt',encoding='utf8')
 docs = loader.load()
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=250,chunk_overlap=40)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=200,chunk_overlap=40)
 splits = text_splitter.split_documents(docs)
-embedding_model = get_embeddings("BAAI/bge-small-zh-v1.5")
-db = FAISS.from_documents(splits,embedding_model) # 在内存中构建向量索引，但不持久化到本地文件
+# 查看chunk
+# for i,doc in enumerate(splits):
+#     print(f'片段{i+1}(长度:{len(doc.page_content)})')
+#     print(doc.page_content)
+#     print('-'*100+'\n')
+# 加载向量嵌入模型，建立索引
+# embedding_model = get_embeddings("BAAI/bge-small-zh-v1.5")
+embedding_model = DashScopeEmbeddings(dashscope_api_key=OPENAI_API_KEY)
+if os.path.exists("faiss_index_qwen"):
+    print("加载已有索引...")
+    db = FAISS.load_local("faiss_index_qwen", embedding_model, allow_dangerous_deserialization=True)
+else:
+    print("构建新索引...")
+    db = FAISS.from_documents(splits,embedding_model) # 在内存中构建向量索引，但不持久化到本地文件
+    db.save_local("faiss_index_qwen")
+    print("索引已保存到faiss_index_qwen...")
+
 print('---模块A(Indexing)完成---\n')
+
 
 
 
@@ -70,29 +89,34 @@ prompt = ChatPromptTemplate.from_messages([
 ])
 
 # 3. G (Generation - 生成)
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # 4. 辅助函数：将检索到的Doc原始文档对象格式化为字符串，让llm能读懂
 def format_docs(docs):
     return "\n".join(doc.page_content for doc in docs)
 
+parser = StrOutputParser()
 
 # 5. 组装 RAG 链条(LCEL)
 rag_chain = (
     {"context":retrieve | format_docs,"question":RunnablePassthrough()}
     | prompt
     | llm
-    | StrOutputParser()
+    | parser
 )
 
 # --- 运行 RAG 链 ---
 
 question = '模块05的目标是什么？'
-response = rag_chain.invoke(question)
+response = rag_chain.invoke(question, verbose=True)
 print(f'提问:{question}')
 print(f'回答:{response}\n')
 

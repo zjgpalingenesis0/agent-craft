@@ -1,12 +1,16 @@
+from langchain_community.embeddings import DashScopeEmbeddings
+from config import DASHSCOPE_EMBEDDING_API_KEY
 import config
 from embeddings import get_embeddings
 
 
 # 首次运行可能时间较久 -- 同时运行本文件需要梯子，不然无法加载到本地
-print('---正在加载本地嵌入模型(bge-small-zh-v1.5)...---')
-
+# print('---正在加载本地嵌入模型(bge-small-zh-v1.5)...---')
 # 理论：有embedding的向量模型
-embeddings_model = get_embeddings("BAAI/bge-small-zh-v1.5")
+# embeddings_model = get_embeddings("BAAI/bge-small-zh-v1.5")
+
+print('---正在加载本地嵌入模型(dashscope-embeddings)...---')   # 要注意这个api-key不能加引号，否则会报错
+embeddings_model = DashScopeEmbeddings(dashscope_api_key=DASHSCOPE_EMBEDDING_API_KEY)
 print('嵌入模型载入完毕')
 
 # 演示：将文本转换为向量

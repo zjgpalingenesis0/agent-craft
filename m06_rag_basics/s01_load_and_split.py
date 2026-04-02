@@ -46,7 +46,7 @@ print(f'{docs}已加载完成!')
 # 2.分割
 text_splitter = RecursiveCharacterTextSplitter(
     # 本节重点
-    chunk_size=250, # 设定的chunk块大小(字符数),
+    chunk_size=200, # 设定的chunk块大小(字符数),
     chunk_overlap=40 # 设定的重叠大小(字符数)
 ) # 创建分割器的配置模板
 splits = text_splitter.split_documents(docs) # 实际执行切割
