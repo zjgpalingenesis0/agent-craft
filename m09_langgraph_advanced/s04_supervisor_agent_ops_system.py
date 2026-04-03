@@ -1,5 +1,5 @@
 import os
-from config import OPENAI_API_KEY,LANGCHAIN_API_KEY
+from config import OPENAI_API_KEY, LANGCHAIN_API_KEY, OPENAI_BASE_URL
 from langchain_openai import ChatOpenAI
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage,SystemMessage
@@ -13,12 +13,16 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true" # 总开关，决定启用追踪功�
 os.environ["LANGCHAIN_PROJECT"] = "supervisor_agent_ops_system" # 自定义项目名
 os.environ["LANGCHAIN_API_KEY"] = LANGCHAIN_API_KEY
 
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # === 一、Graph-as-a-Tool ===
 # === 模拟一个不稳定的SSH日志查询过程 ===
 

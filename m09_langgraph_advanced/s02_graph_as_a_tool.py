@@ -1,5 +1,5 @@
 import os
-from config import OPENAI_API_KEY,LANGCHAIN_API_KEY
+from config import OPENAI_API_KEY, LANGCHAIN_API_KEY, OPENAI_BASE_URL
 from langchain_openai import ChatOpenAI
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -12,28 +12,36 @@ os.environ["LANGCHAIN_PROJECT"] = "graph_as_tool" # 自定义项目名
 os.environ["LANGCHAIN_API_KEY"] = LANGCHAIN_API_KEY
 
 # llm配置
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # 构建子工作流
 # 1.子任务状态
 class RetryState(MessagesState):
-    query: str
-    attempt: int
-    result: str
+    query: str     # 用户查询内容
+    attempt: int   # 当前重试次数
+    result: str     # API调用结果
 
 # 2.子图逻辑 -- 模拟一个可能失败，需重试的API调用
 def call_unstable_api(state:RetryState):
     """模拟偶发性的外部服务，偶发失败"""
     attempt = state["attempt"]
-    if attempt == 1:
-        # 第一次故意失败
+    print(f"🔄 [子图] 第 {attempt} 次尝试调用 API...")
+
+    if attempt <= 1:
+        # 前几次故意失败
+        print(f"❌ [子图] 第 {attempt} 次失败：服务暂时不可用")
         return {"result":"ERROR：服务暂时不可用","attempt":attempt+1}
     else:
         # 第二次成功
+        print(f"✅ [子图] 第 {attempt} 次成功：已处理请求")
         return {"result":f"SUCCESS：成功处理请求：{state['query']}","attempt":attempt+1}
 
 def should_retry(state:RetryState):
@@ -116,3 +124,8 @@ if __name__ == '__main__':
         print("\n❌ 未执行任何工具")
     final_reply = result["messages"][-1]
     print(f'\n最终回复:\n{final_reply}')
+
+    # 保存可视化架构图
+    with open('workflow.png', 'wb') as f:
+        f.write(app.get_graph().draw_mermaid_png())
+    print("图表已保存为 workflow.png")

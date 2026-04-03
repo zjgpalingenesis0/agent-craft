@@ -1,5 +1,5 @@
 import os
-from config import OPENAI_API_KEY,LANGCHAIN_API_KEY
+from config import OPENAI_API_KEY, LANGCHAIN_API_KEY, OPENAI_BASE_URL
 from langchain_openai import ChatOpenAI
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -12,12 +12,16 @@ os.environ["LANGCHAIN_PROJECT"] = "multi_agent_orchestration" # 自定义项目�
 os.environ["LANGCHAIN_API_KEY"] = LANGCHAIN_API_KEY
 
 # llm配置
+# llm = ChatOpenAI(
+#     model="deepseek-chat",
+#     api_key=OPENAI_API_KEY,
+#     base_url="https://api.deepseek.com"
+# )
 llm = ChatOpenAI(
-    model="deepseek-chat",
+    model="qwen3.5-plus",
     api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
+    base_url=OPENAI_BASE_URL
 )
-
 # 模拟工具
 @tool
 def search_internal_docs(query:str):
@@ -161,3 +165,7 @@ if __name__ == '__main__':
             elif "next_speaker" in output:
                 speaker = output["next_speaker"]
                 print(f"【Supervisor】指定下一位发言人：{speaker}")
+    # 保存可视化架构图
+    with open('workflow2.png', 'wb') as f:
+        f.write(app.get_graph().draw_mermaid_png())
+    print("图表已保存为 workflow2.png")
