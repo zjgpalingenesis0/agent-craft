@@ -3,7 +3,21 @@
 > 📌 核心知识点：MCP协议高级应用｜传输层封装｜LangChain集成｜流式输出｜多服务管理
 
 ---
+### 新增：高德地图mcp调用
 
+在cherry studio中导入：
+
+```json
+{
+  "mcpServers": {
+    "amap-maps-streamableHTTP": {
+      "url": "https://mcp.amap.com/mcp?key=您在高德官网上申请的key"
+    }
+  }
+}
+```
+
+> ⚠️ 注意：这个和之前的配置有区别，之前的似乎不支持了。
 ### 1. `s01_agent_stream.py` （通用流式输出组件）
 
 实现通用的LangGraph事件流监听和可视化输出功能，提供友好的用户交互体验。
